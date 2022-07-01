@@ -19,12 +19,11 @@ def copy_most_recent_files(replay_folder, target_folder, number_of_files, set_na
 
     # make set directory
     if (os.path.isdir(target_folder + "\\" + set_name)):
-        set_name = set_name + date.today()
+        set_name = set_name + str(date.today())
     os.mkdir(target_folder + "\\" + set_name)
     
     #copy files over to set directory
     for i in range(number_of_files):
         file_name = sorted_files[i].split('\\')[-1]
         shutil.copyfile(sorted_files[i], target_folder + "\\" + set_name + "\\" + file_name)
-
 
