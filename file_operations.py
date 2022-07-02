@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date
 import glob
 import os
 import shutil
@@ -14,12 +14,12 @@ def copy_most_recent_files(replay_folder, target_folder, number_of_files, set_na
     # get replays and sort by recency
     list_of_files = glob.glob(replay_folder + "/*")
     if (len(list_of_files) < number_of_files):
-        raise FileNotFoundError("Could not find replays ")
+        raise FileNotFoundError("Could not find replays")
     sorted_files = sorted(list_of_files, key=os.path.getmtime)
 
     # make set directory
     if (os.path.isdir(target_folder + "\\" + set_name)):
-        set_name = set_name + str(date.today())
+        raise IsADirectoryError("Set directory already exists")
     os.mkdir(target_folder + "\\" + set_name)
     
     #copy files over to set directory
