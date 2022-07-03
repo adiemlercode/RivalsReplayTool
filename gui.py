@@ -4,6 +4,7 @@ import file_operations as fo
 from tkinter import END, filedialog
 import os
 
+replay_directory = os.path.expandvars("%LOCALAPPDATA%\\RivalsOfAether\\replays")
 
 def run_gui():
     window = tk.Tk()
@@ -14,7 +15,7 @@ def run_gui():
 
 def configure_window(window):
     window.title("Rivals Replay Tool")
-    window.geometry("670x230")
+    window.geometry("640x230")
     window.configure(background="grey")
     window.resizable(False, False)
 
@@ -37,8 +38,10 @@ def setup_replay_folder_controls(window):
     replay_folder_label = tk.Label(window, text="Folder Containing Replays:", bg="grey", font=("Arial", 13))
     replay_folder_label.grid(row=0, column=0, sticky="sw", padx=5, pady=5)
 
-    replay_folder_text = tk.Entry(window, font=("Arial", 13), state="readonly")
+    replay_folder_text = tk.Entry(window, font=("Arial", 13))
     replay_folder_text.grid(row=1, column=0, sticky="w", padx=5, pady=5)
+    replay_folder_text.insert(0, replay_directory)
+    replay_folder_text.config(state="readonly")
     
     replay_file_button = tk.Button(window, padx=10, text="Select Folder", command=lambda: add_file(replay_folder_text))
     replay_file_button.grid(row=1, column=1, sticky="w", pady=5)
