@@ -1,3 +1,4 @@
+from distutils.log import error
 import tkinter as tk
 from tkinter.font import BOLD
 import file_operations as fo
@@ -32,7 +33,8 @@ def setup_grid(window):
     setup_target_folder_controls(window)
     setup_file_count_controls(window)
     setup_set_name_controls(window)
-    setup_submit_controls(window)    
+    setup_error_label(window)
+    setup_submit_button(window)    
 
 def setup_replay_folder_controls(window):
     replay_folder_label = tk.Label(window, text="Folder Containing Replays:", bg="grey", font=("Arial", 13))
@@ -70,12 +72,16 @@ def setup_set_name_controls(window):
     set_name_text = tk.Entry(window, font=("Arial", 13))
     set_name_text.grid(row=3, column=2, sticky="w", padx=5, pady=5)
 
-def setup_submit_controls(window):
+def setup_error_label(window):
+    error_label = tk.Label(window, bg="grey", text="Error", font=("Arial", 13), fg="red")
+    error_label.grid(row=4, column=0, columnspan=4)
+
+def setup_submit_button(window):
     blank_label = tk.Label(window, bg="grey")
     blank_label.grid(row=4, column=0, sticky="sw", padx=5, pady=5)
 
     submit_button = tk.Button(window, font=("Arial", 14, BOLD), text="Zip It!", command=lambda: copy_and_zip_files(window))
-    submit_button.grid(row=5, column=0, padx=5, pady=5, columnspan=4)
+    submit_button.grid(row=5, column=0, columnspan=4)
 
 def add_file(folder_text):
     file_name = filedialog.askdirectory(initialdir="/", title="Select Replay Folder")
@@ -89,8 +95,14 @@ def copy_and_zip_files(window):
     target_folder = window.children["!entry2"].get()
     file_count_text = window.children["!entry3"].get()
     set_name = window.children["!entry4"].get()
-    if (not file_count_text.isdigit()):
-        raise TypeError("Value for number of files is not a number")
+    
+    try:
+        if (not file_count_text.isdigit()):
+            raise TypeError("Value for number of files is not a number")
 
-    fo.copy_most_recent_files(replay_folder, target_folder, int(file_count_text), set_name)
-    fo.zip_and_delete_set(target_folder + "\\" + set_name)
+        fo.copy_most_recent_files(replay_folder, target_folder, int(file_count_text), set_name)
+        fo.zip_and_delete_set(target_folder + "\\" + set_name)
+    except Exception as e:
+        print("caught")
+        error_label = window.children["!label5"]
+        error_label.config(text=str(e))
