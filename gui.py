@@ -58,6 +58,12 @@ def setup_target_folder_controls(window):
     target_file_button = tk.Button(window, padx=10, text="Select Folder", command=lambda: add_file(target_folder_text))
     target_file_button.grid(row=1, column=3, sticky="w", pady=5)
 
+    config = fo.load()
+    if (config is not None and "targetDirectory" in config):
+        target_folder_text.config(state="normal")
+        target_folder_text.insert(0, config["targetDirectory"])
+        target_folder_text.config(state="readonly")
+
 def setup_file_count_controls(window):
     file_count_label = tk.Label(window, text="Number of Files:", bg="grey", font=("Arial", 13))
     file_count_label.grid(row=2, column=0, sticky="sw", padx=5, pady=5)
@@ -73,7 +79,7 @@ def setup_set_name_controls(window):
     set_name_text.grid(row=3, column=2, sticky="w", padx=5, pady=5)
 
 def setup_error_label(window):
-    error_label = tk.Label(window, bg="grey", text="Error", font=("Arial", 13), fg="red")
+    error_label = tk.Label(window, bg="grey", font=("Arial", 13), fg="red")
     error_label.grid(row=4, column=0, columnspan=4)
 
 def setup_submit_button(window):
@@ -91,6 +97,8 @@ def add_file(folder_text):
     folder_text.config(state="readonly")
 
 def copy_and_zip_files(window):
+    error_label = window.children["!label5"]
+    error_label.config(text="")
     replay_folder = window.children["!entry"].get()
     target_folder = window.children["!entry2"].get()
     file_count_text = window.children["!entry3"].get()
@@ -102,7 +110,7 @@ def copy_and_zip_files(window):
 
         fo.copy_most_recent_files(replay_folder, target_folder, int(file_count_text), set_name)
         fo.zip_and_delete_set(target_folder + "\\" + set_name)
+        fo.save({'targetDirectory': target_folder})
     except Exception as e:
         print("caught")
-        error_label = window.children["!label5"]
         error_label.config(text=str(e))
