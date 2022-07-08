@@ -79,7 +79,7 @@ def setup_set_name_controls(window):
     set_name_text.grid(row=3, column=2, sticky="w", padx=5, pady=5)
 
 def setup_error_label(window):
-    error_label = tk.Label(window, bg="grey", font=("Arial", 13), fg="red")
+    error_label = tk.Label(window, bg="grey", font=("Arial", 15))
     error_label.grid(row=4, column=0, columnspan=4)
 
 def setup_submit_button(window):
@@ -111,6 +111,9 @@ def copy_and_zip_files(window):
         fo.copy_most_recent_files(replay_folder, target_folder, int(file_count_text), set_name)
         fo.zip_and_delete_set(target_folder + "\\" + set_name)
         fo.save({'targetDirectory': target_folder})
+        error_label.config(fg="spring green")
+        error_label.config(text="Done!")
     except Exception as e:
         print("caught")
+        error_label.config(fg="red")
         error_label.config(text=str(e))
