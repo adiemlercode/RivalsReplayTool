@@ -16,7 +16,7 @@ def copy_most_recent_files(replay_folder, target_folder, number_of_files, set_na
     list_of_files = glob.glob(replay_folder + "/*.roa")
     if (len(list_of_files) < number_of_files):
         raise FileNotFoundError("Could not find replays")
-    sorted_files = sorted(list_of_files, key=os.path.getmtime)
+    sorted_files = sorted(list_of_files, key=lambda t: -os.stat(t).st_mtime)
 
     # make set directory
     if (os.path.isdir(target_folder + "\\" + set_name)):
