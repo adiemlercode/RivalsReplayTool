@@ -13,7 +13,7 @@ def copy_most_recent_files(replay_folder, target_folder, number_of_files, set_na
         raise FileNotFoundError("Could not find destination folder")
 
     # get replays and sort by recency
-    list_of_files = glob.glob(replay_folder + "/*")
+    list_of_files = glob.glob(replay_folder + "/*.roa")
     if (len(list_of_files) < number_of_files):
         raise FileNotFoundError("Could not find replays")
     sorted_files = sorted(list_of_files, key=os.path.getmtime)
