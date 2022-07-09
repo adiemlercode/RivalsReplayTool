@@ -71,6 +71,9 @@ def setup_file_count_controls(window):
     file_count_text = tk.Entry(window, font=("Arial", 13))
     file_count_text.grid(row=3, column=0, sticky="w", padx=5, pady=5)
 
+    suggested_file_count = fo.parse_suggested_game_count(replay_directory)
+    file_count_text.insert(0, suggested_file_count)
+
 def setup_set_name_controls(window):
     set_name_label = tk.Label(window, text="Set Name:", bg="grey", font=("Arial", 13))
     set_name_label.grid(row=2, column=2, sticky="sw", padx=5, pady=5)
