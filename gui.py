@@ -78,6 +78,9 @@ def setup_set_name_controls(window):
     set_name_text = tk.Entry(window, font=("Arial", 13))
     set_name_text.grid(row=3, column=2, sticky="w", padx=5, pady=5)
 
+    suggested_set_name = fo.parse_suggested_set_name(replay_directory)
+    set_name_text.insert(0, suggested_set_name)
+
 def setup_error_label(window):
     error_label = tk.Label(window, bg="grey", font=("Arial", 15))
     error_label.grid(row=4, column=0, columnspan=4)
