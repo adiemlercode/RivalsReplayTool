@@ -2,6 +2,7 @@ from datetime import date
 import glob
 import os
 import pickle
+import re
 import shutil
 
 
@@ -48,3 +49,23 @@ def load():
             return dict
     except:
         return None
+
+def parse_suggested_set_name(replay_folder):
+    if (not os.path.isdir(replay_folder)):
+        return ""
+    list_of_files = glob.glob(replay_folder + "/*.roa")
+    if (len(list_of_files) == 0):
+        return ""
+    sorted_files = sorted(list_of_files, key=lambda t: -os.stat(t).st_mtime)
+    most_recent_roa_file = open(sorted_files[0], 'r')
+    roa_text = most_recent_roa_file.readlines()
+    regex = re.compile("^H.{32}")
+    matches = []
+    for line in roa_text:
+        match = regex.search(line)
+        if (match):
+            matches.append(match)
+    if (len(matches) < 2):
+        return ""
+    return matches[0].group(0)[1:].strip() + " vs " + matches[1].group(0)[1:].strip()
+
