@@ -5,6 +5,7 @@ import pickle
 import re
 import shutil
 
+steam_name_regex = re.compile("^H.{32}")
 
 def copy_most_recent_files(replay_folder, target_folder, number_of_files, set_name):
     # verify folders exist
@@ -50,22 +51,53 @@ def load():
     except:
         return None
 
-def parse_suggested_set_name(replay_folder):
+def get_sorted_replays(replay_folder):
     if (not os.path.isdir(replay_folder)):
-        return ""
+        return []
     list_of_files = glob.glob(replay_folder + "/*.roa")
     if (len(list_of_files) == 0):
-        return ""
-    sorted_files = sorted(list_of_files, key=lambda t: -os.stat(t).st_mtime)
-    most_recent_roa_file = open(sorted_files[0], 'r')
-    roa_text = most_recent_roa_file.readlines()
-    regex = re.compile("^H.{32}")
+        return []
+    return sorted(list_of_files, key=lambda t: -os.stat(t).st_mtime)
+
+def get_steam_name_matches(roa_file):
+    opened_roa_file = open(roa_file, 'r')
+    roa_text = opened_roa_file.readlines()
     matches = []
     for line in roa_text:
-        match = regex.search(line)
+        match = steam_name_regex.search(line)
         if (match):
             matches.append(match)
+    return matches
+
+def parse_suggested_set_name(replay_folder):
+    sorted_files = get_sorted_replays(replay_folder)
+    if (len(sorted_files) == 0):
+        return ""
+    matches = get_steam_name_matches(sorted_files[0])
+    print(matches)
     if (len(matches) < 2):
         return ""
     return matches[0].group(0)[1:].strip() + " vs " + matches[1].group(0)[1:].strip()
+
+def parse_suggested_game_count(replay_folder):
+    sorted_files = get_sorted_replays(replay_folder)
+    if (len(sorted_files) == 0):
+        return ""
+    matches = get_steam_name_matches(sorted_files[0])
+    if (len(matches) < 2):
+        return ""
+    player_one = matches[0].group(0)[1:].strip()
+    player_two = matches[1].group(0)[1:].strip()
+    games = 1
+    range_max = min(len(sorted_files), 5)
+    for i in range(1, range_max):
+        print(i)
+        matches = get_steam_name_matches(sorted_files[i])
+        same_players = matches[0].group(0)[1:].strip() == player_one and matches[1].group(0)[1:].strip() == player_two
+        if (same_players):
+            games += 1
+        else:
+            break
+    return games
+
 
