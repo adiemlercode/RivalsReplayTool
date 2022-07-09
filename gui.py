@@ -115,11 +115,11 @@ def copy_and_zip_files(window):
             raise TypeError("Value for number of files is not a number")
 
         fo.copy_most_recent_files(replay_folder, target_folder, int(file_count_text), set_name)
-        fo.zip_and_delete_set(target_folder + "\\" + set_name)
+        zip_name = target_folder + "\\" + set_name
+        fo.zip_and_delete_set(zip_name)
         fo.save({'targetDirectory': target_folder})
         error_label.config(fg="spring green")
         error_label.config(text="Done!")
     except Exception as e:
-        print("caught")
         error_label.config(fg="red")
         error_label.config(text=str(e))

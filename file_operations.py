@@ -74,10 +74,12 @@ def parse_suggested_set_name(replay_folder):
     if (len(sorted_files) == 0):
         return ""
     matches = get_steam_name_matches(sorted_files[0])
-    print(matches)
     if (len(matches) < 2):
         return ""
-    return matches[0].group(0)[1:].strip() + " vs " + matches[1].group(0)[1:].strip()
+    set_name = matches[0].group(0)[1:].strip() + " vs " + matches[1].group(0)[1:].strip()
+    # Parse out nonalphanumeric characters for filename
+    set_name = re.sub('[^\w_.)( -]', '', set_name)
+    return set_name
 
 def parse_suggested_game_count(replay_folder):
     sorted_files = get_sorted_replays(replay_folder)
@@ -91,7 +93,6 @@ def parse_suggested_game_count(replay_folder):
     games = 1
     range_max = min(len(sorted_files), 5)
     for i in range(1, range_max):
-        print(i)
         matches = get_steam_name_matches(sorted_files[i])
         same_players = matches[0].group(0)[1:].strip() == player_one and matches[1].group(0)[1:].strip() == player_two
         if (same_players):
